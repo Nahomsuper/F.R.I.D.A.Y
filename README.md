@@ -1,3 +1,5 @@
+# F.R.I.D.A.Y
+
 <h1 align="center">J.A.R.V.I.S </h1> 
 
 <div align="center">
