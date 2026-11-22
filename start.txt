@@ -1,0 +1,4 @@
+push it to https://github.com/Nahomsuper/F.R.I.D.A.Y
+send auth if needed so i can verify through browser
+then set user.name as nive and user.email as nahsupit@gmail.com
+then push it

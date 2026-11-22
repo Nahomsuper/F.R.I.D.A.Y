@@ -1,0 +1,5 @@
+
+C:\Users\Admin\Documents\Jarvis\J.A.R.V.I.S-master>cd "C:\Users\Admin\Documents\Jarvis\J.A.R.V.I.S-master".\venv\Scripts\python.exe jarvis.py
+The system cannot find the path specified.
+
+C:\Users\Admin\Documents\Jarvis\J.A.R.V.I.S-master>
