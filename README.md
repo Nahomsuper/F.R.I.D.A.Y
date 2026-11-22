@@ -54,7 +54,7 @@ For a permanent setup, add those variables with Windows **Edit system environmen
 
 ## Voice tests
 
-After she says `System ready`, try these:
+After the greeting, try these:
 
 - `friday` or `hello friday` -> `Yes sir?`
 - `what time is it`

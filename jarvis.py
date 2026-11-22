@@ -49,8 +49,6 @@ class Jarvis:
         else:
             speak("Good evening, Sir Nahom.")
 
-        speak("System ready, Sir Nahom.")
-
     def sendEmail(self, to, content) -> None:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.ehlo()
