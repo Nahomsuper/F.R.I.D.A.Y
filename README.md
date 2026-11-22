@@ -1,151 +1,120 @@
 # F.R.I.D.A.Y
 
-<h1 align="center">J.A.R.V.I.S </h1> 
+A Windows voice assistant that listens through the microphone, prints what it hears in the terminal, and replies out loud. The project folder is `J.A.R.V.I.S-master`, but the assistant answers to both `Friday` and `Jarvis`.
 
-<div align="center">
-  
-[![Welcome to my profile](https://img.shields.io/badge/Hello,Devs!-Welcome-blue.svg?style=flat&logo=github)](https://github.com/gauravsingh9356/J.A.R.V.I.S)
-[![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103)](https://github.com/gauravsingh9356/J.A.R.V.I.S)
- [![GitHub issues](https://img.shields.io/github/issues/GauravSingh9356/J.A.R.V.I.S)](https://github.com/GauravSingh9356/J.A.R.V.I.S/issues)
-![Stars](https://img.shields.io/github/stars/gauravsingh9356/J.A.R.V.I.S?style=flat&logo=github)
-![Forks](https://img.shields.io/github/forks/gauravsingh9356/J.A.R.V.I.S?style=flat&logo=github)
-[![GitHub license](https://img.shields.io/github/license/GauravSingh9356/J.A.R.V.I.S)](https://github.com/GauravSingh9356/J.A.R.V.I.S/blob/master/LICENSE)
-  
-[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
+## How it runs
 
-  </div>
+The app runs from the local virtual environment, not from the system Python.
 
-
-
-<img src="jarvis1.jpg"/>
-
-### Requirements:
-
-<li>datetime</li>
-<li>os</li>
-<li> pyttsx3</li>
-<li> wikipedia</li>
-<li> speech_recognition </li>
-<li> webbrowser</li>
-<li> sys</li>
-<li> smtplib</li>
-<li>requests</li>
-<li>json</li>
-<li>defflib</li>
-<li>geocoder</li>
-<li>pyjokes</li>
-<li>psutil</li>
-<li> pyautogui</li>
-<li> opencv</li>
-
-<h2>Required Packages</h2>
-
-```
-pip install -r requirements.txt
+```powershell
+cd "C:\Users\Admin\Documents\Jarvis\J.A.R.V.I.S-master"
+venv\Scripts\python.exe jarvis.py
 ```
 
-> _ To install PyAudio on windows head over to https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio and download the .whl for your machine and run the installation as shown below, then install the remaining dependencies from the requirements.txt file. You may remove pyAduio from the requirements file if it interrupts your installation (its there for unix users)
-```bash
-pip install PyAudio‑0.2.11‑cp<version>‑cp<version>m‑win_amd<architecture>.whl
+Startup sequence:
+
+1. `jarvis.py` tries face recognition through the webcam (`Face-Recognition/trainer/trainer.yml` and the Haar cascade).
+2. If the camera or model is unavailable, it asks for a username/password.
+3. On success, `wishMe()` greets you and the main loop starts.
+4. `takeCommand()` opens the default microphone, prints `Listening...`, then `Recognizing..`, then `User said: ...`.
+5. `execute_query()` matches the text to a command and `speak()` replies using Edge TTS, Windows SAPI, or eSpeak.
+
+Speech recognition uses Google Web Speech with `en-in`, so an internet connection is required for voice commands. Recognition is synchronous: it waits for one phrase, prints it, responds, then listens again.
+
+## Desktop shortcut
+
+The shortcut on the Desktop is inside the `Student's Web Project` folder and is named `F.R.I.D.A.Y.lnk`. It is configured as:
+
+| Field | Value |
+| --- | --- |
+| Target | `C:\Users\Admin\Documents\Jarvis\J.A.R.V.I.S-master\venv\Scripts\python.exe` |
+| Arguments | `jarvis.py` |
+| Start in | `C:\Users\Admin\Documents\Jarvis\J.A.R.V.I.S-master` |
+
+To recreate it: right-click the desktop, choose **New > Shortcut**, paste the target, then append ` jarvis.py` after the target path and set the working directory in the shortcut properties.
+
+## First-time setup
+
+```powershell
+cd "C:\Users\Admin\Documents\Jarvis\J.A.R.V.I.S-master"
+python -m venv venv
+venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-### Speech on Windows 10 x Lite (no SAPI voices)
+On Windows, PyAudio may need the bundled wheel or a matching build for your Python version. The rest of the dependencies install from `requirements.txt`.
 
-JARVIS now uses one shared `tts.py` speaker with automatic fallbacks:
+Authentication credentials are read from environment variables so no password is stored in the repository:
 
-1. Windows SAPI5 voices (when installed).
-2. A portable `espeak-ng.exe` placed in `bin/espeak-ng.exe`, or set the `JARVIS_ESPEAK_PATH` environment variable to its full path (offline, robotic voice).
-3. `edge-tts` online neural voices (needs internet; uses `en-US-GuyNeural` / `en-US-JennyNeural`).
+```powershell
+$env:JARVIS_AUTH_USERNAME = "nive"
+$env:JARVIS_AUTH_PASSWORD = "your-password"
+```
 
-Friday (female voice) is the default. Say "switch to male voice" to use the JARVIS voice instead. If no backend works, the text is printed to the console instead.
+For a permanent setup, add those variables with Windows **Edit system environment variables** or `setx`.
 
-```bash
+## Voice tests
+
+After she says `System ready`, try these:
+
+- `friday` or `hello friday` -> `Yes sir?`
+- `what time is it`
+- `tell me a joke`
+- `what is the date`
+- `help` -> prints the full command list on screen
+
+If `friday` works but longer phrases do not, check the default Windows input device and microphone volume. The terminal will show `hearing audio but unclear` style messages when audio is captured but not understood.
+
+## Commands
+
+Time and date: `what time is it`, `tell me the time`, `what is the date`, `what day is it`.
+
+Web and search: `open google`, `open youtube`, `open amazon`, `search youtube`, `search <query>`, `what is the location`, `wikipedia <topic>`, `sports news`, `tech news`, `news`.
+
+Utilities: `calculate 25 plus 17`, `convert 100 dollars to euros`, `bitcoin price`, `tell me a quote`, `generate a password`, `pick a number`, `flip a coin`, `roll a dice`, `read clipboard`, `check internet`, `system status`, `diagnostics`.
+
+System control: `volume up`, `volume down`, `mute`, `next track`, `pause`, `show desktop`, `minimize window`, `maximize window`, `disk space`, `battery status`, `top processes`, `open task manager`, `open settings`, `lock computer`, `restart`, `shutdown`.
+
+Notes and learning: `write a note`, `read today's note`, `open note`, `remember that`, `do you remember anything`, `learn that good night means sleep well sir`, `when i say hello say hi sir`, `what did you learn`, `forget good night`.
+
+Conversation: `how are you`, `thank you`, `say anything`, `repeat that`, `switch to male voice`, `switch to female voice`, `clear console`, `goodbye`, `sleep`.
+
+## Speech and voice backend
+
+- Input: `speech_recognition` using the default microphone and Google Web Speech (`en-in`).
+- Output: `tts.py` tries online Edge voices first, then Windows SAPI5, then a local `bin/espeak-ng.exe` (or `JARVIS_ESPEAK_PATH`). If all fail, text is printed in the console.
+- Default voice is female. Say `switch to male voice` to change it.
+
+## Troubleshooting
+
+Run this to check the voice engine without starting the assistant:
+
+```powershell
 venv\Scripts\python.exe -c "from tts import speak; speak('Friday online, sir')"
 ```
 
-### On Ubuntu based Linux distribution you need to install the following packages, so that the code works:
+Run this to check microphone capture:
 
+```powershell
+venv\Scripts\python.exe -c "from helpers import takeCommand; print(takeCommand())"
 ```
-sudo apt-get update && sudo apt-get install espeak
 
-```
+Common fixes:
 
-### What it does...
+- No `User said:` line: select the correct microphone as the Windows default input and raise its volume.
+- `Speech recognition is unavailable`: check the internet connection or Google Web Speech availability.
+- Face unlock always fails: check the camera/privacy settings or press `Q` during face unlock to use the password fallback.
+- No spoken audio: check the TTS backend with the command above; Edge TTS needs internet, SAPI needs Windows voices, eSpeak needs the executable.
 
-  <ul>
-   <li>Dynamic Authentication using Optical Face Recognition</li>
-<li>Send emails</li>
-  <li>Dynamic News Reporting at any time with api integration</li>
-  <li>Todo list generator, Yes it remembers all!</li> 
-<li>Open any website with just a voice command</li>
-<li>Plays Music</li>
-<li>Tells time</li>
-<li>Wikipedia powered AI</li>
-<li>Dictionary with Intelligent Sensing i.e. auto checking if spell mistake</li>
-<li>Weather Report such as temp, wind speed, humidity, weather description</li>
-<li>Latitude and longitude</li>
- <li>YouTube searching</li> 
- <li>Google Map searching</a>
- <li>YouTube Downloader, download any youtube video by just putting url of video</li>
- <li>Now Master can switch b/w J.A.R.V.I.S and F.R.I.D.A.Y, switch to female voice assistant</li>
- <li>Voice calculator, current date and system status report</li>
- <li>Spoken reminders, coin flips and dice rolls</li>
- <li>Help command that lists every supported voice command</li>
- <li>Screenshots saved automatically into the screenshots folder</li>
- <li>Live news via Times of India RSS, no API key needed</li>
- <li>System controls: volume, media, windows, task manager, settings, power options</li>
- <li>Disk space, battery status, top processes and closing applications</li>
- <li>Voice notes saved to Desktop as YYYY-MM-DD.txt, with read/open commands</li>
- <li>Currency, temperature, length and weight conversion, crypto prices and quotes</li>
-</ul>
+## Project files
 
-Say `help` to Friday for the full list of voice commands.
+- `jarvis.py` - startup, authentication, main loop, command matching.
+- `helpers.py` - microphone input, commands, notes, system controls, weather, conversions.
+- `tts.py` - speech output with fallbacks.
+- `news.py`, `youtube.py`, `youtube_downloader.py`, `OCR.py`, `diction.py`, `amazon.py` - feature modules.
+- `custom_responses.json` - phrases learned at runtime.
+- `data.json` - dictionary entries used by the `dictionary` command.
+- `Face-Recognition/` - trainer, cascade, and helper scripts for face unlock.
 
-<table>
-  <tr>
-    <td><img src="images/Screenshot%20(138).png"/></td>
-      <td><img src="https://github.com/GauravSingh9356/J.A.R.V.I.S/blob/master/images/face-600x900.png"/></td>
-    
+## License
 
-</tr>
-<tr>
-<td><img src="images/email.jpg"/></td>
-<td><img src="https://github.com/GauravSingh9356/J.A.R.V.I.S/blob/master/images/maxresdefault.jpg"/></td>
-</tr>
-<td><img src="https://github.com/GauravSingh9356/J.A.R.V.I.S/blob/master/images/4-Best-Weather-Forecast-APIs-for-Development-of-Weather-Apps-624x304.jpeg"/></td>
-  <td><img src="https://github.com/GauravSingh9356/J.A.R.V.I.S/blob/master/images/maxresdefault%20(1).jpg"/></td>
-</tr>
-<tr>
-  <td><img src="canny.jpg"/>
-          </td>
-  <td><img src="ImgContor.jpg"/>
-          </td>
-</tr>
-</table>
-
-## Some Sneak peeks:
-
-<ul>
-  <li><h2> Jarvis, Are you there?</h2></li>
-  <li><h2> At your service, Sir</h2></li>
-  
-  <li><h2> Jarvis, What are today's news headlines? can you tell?</h2></li>
-  <li><h2>Ofcourse, Sir -> Then news headlines   Would you like to visit the news url?</h2></li>
-  
-  <li><h2> Search Youtube</h2></li>
-  <li><h2>What you want to search, Sir</h2></li>
-  <li><h2>Coding for kids</h2></li>
-  <li><h2> Opens youtube in browser with desired search query results </h2></li>
-  
-   <li><h2> Jarvis, Can you send email to Gaurav?</h2></li>
-  <li><h2>What I say sir, Sir</h2></li>
-   <li><h2>Gaurav is a good boy</h2></li>
-  <li><h2> Email is sent successfully, Sir</h2></li>
-  
-  # And so on....
-  
-<a href="https://techtalkswithgaurav.blogspot.com/2020/06/your-personal-assistant-jarvis.html" target="_blank">Read complete blog article</a>
-
-## Contribution:
-Thank you for your interest in contributing to our Repo! Pull requests are welcome. For fixing typos, please make a PR with your fixes. We are happy for every contribution.
-A lot can be done with this project. Core AI chatbot like functionality can be added. More python scripts can be associated. Pull requests for any such changes are accepted. Feel free to fork this project and make your own changes too.
+MIT License. See `LICENSE`.
